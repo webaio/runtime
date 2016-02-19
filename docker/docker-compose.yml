@@ -1,0 +1,25 @@
+eventor_webserver:
+  container_name: eventor_webserver
+  build: eventor_webserver
+  hostname: eventor_webserver
+  ports:
+    - 80:80
+  volumes:
+    - /webaio/eventor_webserver:/webaio/eventor_webserver
+    - /var/log/requests:/var/log/requests
+    - /var/log/nginx:/var/log/nginx
+
+eventor_flume:
+    container_name: eventor_flume
+    build: eventor_flume
+    hostname: eventor_flume
+    links:
+        - eventor_webserver
+    volumes_from:
+        - eventor_webserver
+    volumes:
+        - /var/log/flume:/var/log/flume
+    environment:
+        FLUME_CONF_FILE: /opt/flume/conf/flume.conf
+        FLUME_AGENT_NAME: a1
+        FLUME_PLUGINS_DIRECTORY: /opt/flume/plugins.d/

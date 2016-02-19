@@ -1,0 +1,3 @@
+[submodule "eventor"]
+	path = eventor
+	url = git@bitbucket.org:webaio/eventor.git
