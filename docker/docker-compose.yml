@@ -5,7 +5,7 @@ eventor_webserver:
   ports:
     - 80:80
   volumes:
-    - /webaio/eventor_webserver:/webaio/eventor_webserver
+    - /webaio/docker/eventor_webserver:/webaio/docker/eventor_webserver
     - /var/log/requests:/var/log/requests
     - /var/log/nginx:/var/log/nginx
 

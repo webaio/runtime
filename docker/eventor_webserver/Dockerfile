@@ -15,7 +15,7 @@ ENV LUAJIT_LIB /usr/local/lib
 ENV LUAJIT_INC /usr/local/include/luajit-2.0
 
 RUN apt-get -qq update
-RUN apt-get -qq -y install wget vim-nox python-setuptools
+RUN apt-get -qq -y install wget vim-nox python-setuptools geoip-bin geoip-database geoip-dbg libgeoip-dev
 RUN easy_install supervisor
 
 # ***** BUILD DEPENDENCIES *****
@@ -69,6 +69,7 @@ RUN ./configure \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
     --without-http_memcached_module \
+    --with-http_geoip_module \
     --with-ipv6 \
     --with-http_ssl_module \
     --with-http_stub_status_module \
@@ -116,5 +117,14 @@ RUN tar -xzvf v0.1.0.tar.gz && rm v0.1.0.tar.gz && mv lua-resty-cookie-0.1.0 lua
 
 RUN cp -rf /tmp/lua-modules/lua-resty-cookie/lib/* /usr/local/share/lua/5.1/
 RUN cp -rf /tmp/lua-modules/lua-resty-string/lib/* /usr/local/share/lua/5.1/
+
+RUN mkdir /tmp/geoip
+WORKDIR /tmp/geoip
+RUN wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+RUN wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+RUN gunzip GeoIP.dat.gz && gunzip GeoLiteCity.dat.gz
+RUN mkdir /usr/share/GeoIP/GeoIP/
+RUN mv GeoIP.dat /usr/share/GeoIP/GeoIP/GeoIP.dat
+RUN mv GeoLiteCity.dat /usr/share/GeoIP/GeoIP/GeoLiteCity.dat
 
 CMD supervisord -c /etc/supervisord.conf && nginx
