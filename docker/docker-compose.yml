@@ -5,9 +5,8 @@ eventor_webserver:
   ports:
     - 80:80
   volumes:
-    - /webaio/docker/eventor_webserver:/webaio/docker/eventor_webserver
-    - /var/log/requests:/var/log/requests
-    - /var/log/nginx:/var/log/nginx
+    - ../logs/requests:/var/log/requests
+    - ../logs/nginx:/var/log/nginx
 
 eventor_flume:
     container_name: eventor_flume
@@ -18,8 +17,49 @@ eventor_flume:
     volumes_from:
         - eventor_webserver
     volumes:
-        - /var/log/flume:/var/log/flume
+        - ../logs/flume:/var/log/flume
     environment:
         FLUME_CONF_FILE: /opt/flume/conf/flume.conf
         FLUME_AGENT_NAME: a1
         FLUME_PLUGINS_DIRECTORY: /opt/flume/plugins.d/
+metrics_storm_zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+        - "49181:2181"
+        - "22"
+metrics_storm_nimbus:
+    image: wurstmeister/storm-nimbus
+    ports:
+        - "49773:3773"
+        - "49772:3772"
+        - "49627:6627"
+        - "22"
+    links:
+        - metrics_storm_zookeeper:zk
+metrics_storm_supervisor:
+    image: wurstmeister/storm-supervisor
+    ports:
+        - "8000"
+        - "22"
+    links:
+        - metrics_storm_nimbus:nimbus
+        - metrics_storm_zookeeper:zk
+metrics_storm_ui:
+    image: wurstmeister/storm-ui
+    ports:
+        - "49080:8080"
+        - "22"
+    links:
+        - metrics_storm_nimbus:nimbus
+        - metrics_storm_zookeeper:zk
+metrics_elasticsearch:
+    image: elasticsearch:2.2
+    ports:
+        - "9200:9200"
+        - "9300:9300"
+metrics_kibana:
+    image: kibana:4.4.1
+    ports:
+        - "5601:5601"
+    links:
+        - metrics_elasticsearch:elasticsearch
