@@ -1,0 +1,29 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Weba.io tracker sample page</title>
+    <meta name="description" content="Weba.io tracker sample page">
+    <meta name="author" content="webaio">
+
+</head>
+
+<body>
+<script>
+    (function (window, document, dataLayer, trackerId) {
+        var script, tag;
+
+        window[dataLayer] = window[dataLayer] || [];
+        tag = document.createElement('script');
+        tag.async = true;
+        tag.id = 'weba-tracker';
+        tag.src = '//weba.io:8080/dist/weba.min.js?dataLayer=' + dataLayer + '&trackerId=' + trackerId;
+        script = document.getElementsByTagName('script')[0];
+        script.parentNode.insertBefore(tag, script);
+
+    }(window, document, 'dataLayer', 'TRACKER_ID'));
+</script>
+</body>
+</html>
