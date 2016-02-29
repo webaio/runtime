@@ -63,3 +63,11 @@ metrics_kibana:
         - "5601:5601"
     links:
         - metrics_elasticsearch:elasticsearch
+tracker:
+    build: tracker
+    container_name: tracker
+    ports:
+        - "8080:8080"
+    volumes:
+        - ../../tracker:/tracker
+
