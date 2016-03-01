@@ -31,8 +31,6 @@ zookeeper:
     hostname: zookeeper
     ports:
         - "2181:2181"
-        - "2888:2888"
-        - "3888:3888"
 
 kafka:
     image: wurstmeister/kafka
@@ -55,11 +53,7 @@ kafka_manager:
     hostname: kafka_manager
     ports:
         - "9000:9000"
-metrics_storm_zookeeper:
-    image: wurstmeister/zookeeper
-    ports:
-        - "49181:2181"
-        - "22"
+
 metrics_storm_nimbus:
     image: wurstmeister/storm-nimbus
     ports:
@@ -68,7 +62,8 @@ metrics_storm_nimbus:
         - "49627:6627"
         - "22"
     links:
-        - metrics_storm_zookeeper:zk
+        - zookeeper
+
 metrics_storm_supervisor:
     image: wurstmeister/storm-supervisor
     ports:
@@ -76,7 +71,8 @@ metrics_storm_supervisor:
         - "22"
     links:
         - metrics_storm_nimbus:nimbus
-        - metrics_storm_zookeeper:zk
+        - zookeeper
+
 metrics_storm_ui:
     image: wurstmeister/storm-ui
     ports:
@@ -84,23 +80,26 @@ metrics_storm_ui:
         - "22"
     links:
         - metrics_storm_nimbus:nimbus
-        - metrics_storm_zookeeper:zk
+        - zookeeper
+
 metrics_elasticsearch:
     image: elasticsearch:2.2
     ports:
         - "9200:9200"
         - "9300:9300"
+
 metrics_kibana:
     image: kibana:4.4.1
     ports:
         - "5601:5601"
     links:
         - metrics_elasticsearch:elasticsearch
+
 tracker:
     build: tracker
     container_name: tracker
     ports:
-        - "8080:8080"
+        - "8081:8081"
     volumes:
         - ../../tracker:/tracker
 
