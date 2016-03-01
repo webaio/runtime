@@ -6,8 +6,8 @@ eventor_webserver:
     - 80:80
   volumes:
     - /webaio/docker/eventor_webserver:/webaio/docker/eventor_webserver
-    - ../logs/requests:/var/log/requests
-    - ../logs/nginx:/var/log/nginx
+    - /webaio/var/logs/requests:/var/log/requests
+    - /webaio/var/logs/nginx:/var/log/nginx
 
 eventor_flume:
     container_name: eventor_flume
@@ -19,7 +19,7 @@ eventor_flume:
     volumes_from:
         - eventor_webserver
     volumes:
-        - ../logs/flume:/var/log/flume
+        - /webaio/var/logs/flume:/var/log/flume
     environment:
         FLUME_CONF_FILE: /opt/flume/conf/flume.conf
         FLUME_AGENT_NAME: a1
