@@ -17,5 +17,5 @@ do
             mv "${filename}.${timestamp}.log" "/var/log/requests/access.${timestamp}.log"
     fi
 
-    sleep 30
+    sleep 900
 done
