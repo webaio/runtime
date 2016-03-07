@@ -103,3 +103,11 @@ tracker:
     volumes:
         - ../../tracker:/tracker
 
+piwik:
+    build: piwik/lamp
+    container_name: piwik
+    ports:
+        - "81:80"
+        - "3306:3306"
+    volumes:
+        - /webaio/piwik:/app

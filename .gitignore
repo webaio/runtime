@@ -112,3 +112,5 @@ $RECYCLE.BIN/
 .vagrant/
 
 logs/
+
+piwik/

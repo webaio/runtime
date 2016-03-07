@@ -3,7 +3,7 @@ Vagrant.configure(2) do |config|
   config.vm.box_check_update = true
   config.ssh.forward_agent = true
   config.vm.network "private_network", ip: "100.0.0.205"
-  config.vm.synced_folder "../", "/webaio", feature: "nfs", nfs_udp: false
+  config.vm.synced_folder "../", "/webaio", type: "nfs", nfs_udp: false, nfs_export: true
 
   config.vm.provider "virtualbox" do |v|
     v.name = "webaio"
