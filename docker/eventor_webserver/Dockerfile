@@ -16,6 +16,7 @@ ENV LUAJIT_INC /usr/local/include/luajit-2.0
 
 RUN apt-get -qq update
 RUN apt-get -qq -y install wget vim-nox python-setuptools geoip-bin geoip-database geoip-dbg libgeoip-dev
+RUN apt-get -qq -y install unzip
 RUN easy_install supervisor
 
 # ***** BUILD DEPENDENCIES *****
@@ -115,8 +116,13 @@ RUN tar -xzvf v0.09.tar.gz && rm v0.09.tar.gz && mv lua-resty-string-0.09 lua-re
 RUN wget https://github.com/cloudflare/lua-resty-cookie/archive/v0.1.0.tar.gz
 RUN tar -xzvf v0.1.0.tar.gz && rm v0.1.0.tar.gz && mv lua-resty-cookie-0.1.0 lua-resty-cookie
 
+RUN wget https://github.com/tcjennings/LUA-RFC-4122-UUID-Generator/archive/master.zip
+RUN unzip master.zip
+
 RUN cp -rf /tmp/lua-modules/lua-resty-cookie/lib/* /usr/local/share/lua/5.1/
 RUN cp -rf /tmp/lua-modules/lua-resty-string/lib/* /usr/local/share/lua/5.1/
+RUN mkdir /usr/local/share/lua/5.1/uuid
+RUN cp -rf /tmp/lua-modules/LUA-RFC-4122-UUID-Generator-master/* /usr/local/share/lua/5.1/uuid
 
 RUN mkdir /tmp/geoip
 WORKDIR /tmp/geoip
