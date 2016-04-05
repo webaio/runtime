@@ -10,12 +10,10 @@ do
             timestamp=$(date +%s)
             echo "Renaming ${filename} ${filename}.${timestamp}.log"
             mv "${filename}" "${filename}.${timestamp}.log"
-            if [ -f /var/run/nginx.pid ]; then
-                kill -USR1 `cat /var/run/nginx.pid`
-            fi
-            sleep 1
+            kill -USR1 `cat /var/run/nginx.pid`
+            sleep 5
             mv "${filename}.${timestamp}.log" "/var/log/requests/access.${timestamp}.log"
     fi
 
-    sleep 900
+    sleep 30
 done

@@ -19,6 +19,26 @@ RUN apt-get -qq -y install wget vim-nox python-setuptools geoip-bin geoip-databa
 RUN apt-get -qq -y install unzip
 RUN easy_install supervisor
 
+#install java oracle jdk
+RUN apt-get install -q -y --no-install-recommends wget software-properties-common python-software-properties
+RUN apt-add-repository -y ppa:webupd8team/java
+RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
+RUN apt-get update && apt-get install -q -y --no-install-recommends oracle-java8-installer
+
+#install flume
+RUN mkdir /opt/flume
+RUN wget -qO- http://ftp.piotrkosoft.net/pub/mirrors/ftp.apache.org/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz \
+  | tar zxvf - -C /opt/flume --strip 1
+
+ADD start-flume.sh /opt/flume/bin/start-flume
+ADD flume.conf /opt/flume/conf/
+
+COPY lib flume-libs
+RUN mkdir /opt/flume/plugins.d/
+RUN cp -rf /flume-libs/* /opt/flume/plugins.d
+
+ENV PATH /opt/flume/bin:$PATH
+
 # ***** BUILD DEPENDENCIES *****
 
 # Common dependencies (Nginx and LUAJit)
@@ -72,6 +92,7 @@ RUN ./configure \
     --without-http_memcached_module \
     --with-http_geoip_module \
     --with-ipv6 \
+    --with-threads \
     --with-http_ssl_module \
     --with-http_stub_status_module \
     --with-http_gzip_static_module \
@@ -98,7 +119,7 @@ RUN rm -rf /${LUA_NGINX_MODULE}
 RUN mkdir /var/log/requests
 ADD nginx.conf /etc/nginx/
 COPY default.conf /etc/nginx/conf.d/default.conf
-COPY index.html /usr/share/nginx/html/index.html
+COPY index.json /usr/share/nginx/html/index.json
 
 RUN mkdir /var/log/supervisord
 RUN touch /var/log/supervisord/logrotate.log
@@ -116,11 +137,15 @@ RUN tar -xzvf v0.09.tar.gz && rm v0.09.tar.gz && mv lua-resty-string-0.09 lua-re
 RUN wget https://github.com/cloudflare/lua-resty-cookie/archive/v0.1.0.tar.gz
 RUN tar -xzvf v0.1.0.tar.gz && rm v0.1.0.tar.gz && mv lua-resty-cookie-0.1.0 lua-resty-cookie
 
+RUN wget https://github.com/doujiang24/lua-resty-kafka/archive/v0.05.tar.gz
+RUN tar -xzvf v0.05.tar.gz && rm v0.05.tar.gz && mv lua-resty-kafka-0.05 lua-resty-kafka
+
 RUN wget https://github.com/tcjennings/LUA-RFC-4122-UUID-Generator/archive/master.zip
 RUN unzip master.zip
 
 RUN cp -rf /tmp/lua-modules/lua-resty-cookie/lib/* /usr/local/share/lua/5.1/
 RUN cp -rf /tmp/lua-modules/lua-resty-string/lib/* /usr/local/share/lua/5.1/
+RUN cp -rf /tmp/lua-modules/lua-resty-kafka/lib/* /usr/local/share/lua/5.1/
 RUN mkdir /usr/local/share/lua/5.1/uuid
 RUN cp -rf /tmp/lua-modules/LUA-RFC-4122-UUID-Generator-master/* /usr/local/share/lua/5.1/uuid
 

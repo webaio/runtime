@@ -7,8 +7,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |v|
     v.name = "webaio"
-    v.memory = 2048
-    v.cpus = 2
+    v.memory = 4096
+    v.cpus = 4
   end
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -17,6 +17,7 @@ Vagrant.configure(2) do |config|
     echo "\n" >> .bashrc
     echo "alias eventor-webserver='docker exec -it eventor_webserver /bin/bash'" >> .bashrc
     echo "alias eventor-flume='docker exec -it eventor_flume /bin/bash'" >> .bashrc
+    echo "alias kafka='docker exec -it kafka /bin/bash'" >> .bashrc
     echo "alias reload-docker-configuration='docker-compose stop && docker-compose build && docker-compose up -d'" >> .bashrc
     echo "\n" >> .bashrc
   SHELL
