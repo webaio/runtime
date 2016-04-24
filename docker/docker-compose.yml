@@ -74,3 +74,25 @@ redis:
     hostname: redis
     ports:
         - 6379:6379
+
+jobmanager:
+    build: flink
+    container_name: jobmanager
+    ports:
+        - 48080:8080
+    expose:
+        - 22
+        - 6123
+        - 8081
+    command: /usr/local/flink/bin/config-flink.sh jobmanager
+
+worker:
+    build: flink
+    container_name: worker
+    expose:
+        - 6121
+        - 6122
+    links:
+        - jobmanager
+    command: /usr/local/flink/bin/config-flink.sh taskmanager
+    
