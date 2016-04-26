@@ -32,11 +32,7 @@ RUN wget -qO- http://ftp.piotrkosoft.net/pub/mirrors/ftp.apache.org/flume/1.6.0/
 
 ADD start-flume.sh /opt/flume/bin/start-flume
 ADD flume.conf /opt/flume/conf/
-
-COPY lib flume-libs
 RUN mkdir /opt/flume/plugins.d/
-RUN cp -rf /flume-libs/* /opt/flume/plugins.d
-
 ENV PATH /opt/flume/bin:$PATH
 
 # ***** BUILD DEPENDENCIES *****
