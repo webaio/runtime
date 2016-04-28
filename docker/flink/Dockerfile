@@ -22,3 +22,13 @@ ENV PATH $PATH:$FLINK_HOME/bin
 ADD conf/flink-conf.yaml /usr/local/flink/conf/
 ADD config-flink.sh /usr/local/flink/bin/
 RUN chmod +x /usr/local/flink/bin/config-flink.sh
+
+RUN wget https://raw.githubusercontent.com/51Degrees/Java-Device-Detection/master/data/51Degrees-LiteV3.2.dat
+RUN mv 51Degrees-LiteV3.2.dat 51degrees.dat
+
+RUN wget http://download.softagency.net/MySQL/Downloads/Connector-J/mysql-connector-java-6.0.2.zip
+RUN unzip mysql-connector-java-6.0.2.zip
+ENV CLASSPATH /mysql-connector-java-6.0.2/mysql-connector-java-6.0.2-bin.jar/:.
+
+RUN wget https://s3-eu-west-1.amazonaws.com/weba-deploy-processor/weba.jar
+RUN mv weba.jar app.jar
