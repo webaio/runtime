@@ -3,7 +3,7 @@
 CONF=/usr/local/flink/conf
 EXEC=/usr/local/flink/bin
 
-sed -i -e "s/%nb_slots%/`nproc`/g" $CONF/flink-conf.yaml
+sed -i -e "s/%nb_slots%/`grep -c ^processor /proc/cpuinfo`/g" $CONF/flink-conf.yaml
 sed -i -e "s/%parallelism%/1/g" $CONF/flink-conf.yaml
 
 if [ "$1" = "jobmanager" ]; then

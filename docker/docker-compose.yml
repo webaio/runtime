@@ -80,11 +80,14 @@ jobmanager:
     container_name: jobmanager
     ports:
         - 48080:8080
+        - 6123:6123
     expose:
         - 22
         - 6123
         - 8081
     command: /usr/local/flink/bin/config-flink.sh jobmanager
+    links:
+        - kafka
 
 worker:
     build: flink
@@ -94,5 +97,5 @@ worker:
         - 6122
     links:
         - jobmanager
+        - kafka
     command: /usr/local/flink/bin/config-flink.sh taskmanager
-    
