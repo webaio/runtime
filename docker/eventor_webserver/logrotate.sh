@@ -1,5 +1,5 @@
 #!/bin/bash
-chmod +x /webaio/docker/webaio_eventor_webserver/logrotate.sh
+chmod +x /logrotate.sh
 
 filename="/var/log/nginx/access.log"
 

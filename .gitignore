@@ -113,4 +113,4 @@ $RECYCLE.BIN/
 
 logs/
 
-/piwik/
+/docker/flink/weba.io-metrics-0.0.1.jar

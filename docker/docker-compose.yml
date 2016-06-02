@@ -43,37 +43,35 @@ eventor_webserver:
        - kafka
     ports:
         - 80:80
-    volumes:
-        - /webaio/docker/eventor_webserver:/webaio/docker/eventor_webserver
     environment:
         FLUME_CONF_FILE: /opt/flume/conf/flume.conf
         FLUME_AGENT_NAME: a1
         FLUME_PLUGINS_DIRECTORY: /opt/flume/plugins.d/
         FLUME_JAVA_OPTIONS: "-Xms1024m -Xmx2048m -Xss256k -XX:MaxDirectMemorySize=256m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
 
-elasticsearch:
-    image: elasticsearch:2.2
-    container_name: elasticsearch
-    hostname: elasticsearch
-    ports:
-        - 9200:9200
-        - 9300:9300
-
-kibana:
-    image: kibana:4.4.1
-    container_name: kibana
-    hostname: kibana
-    ports:
-        - 5601:5601
-    links:
-        - elasticsearch
-
-redis:
-    image: redis:3.0.7-alpine
-    container_name: redis
-    hostname: redis
-    ports:
-        - 6379:6379
+#elasticsearch:
+#    image: elasticsearch:2.2
+#    container_name: elasticsearch
+#    hostname: elasticsearch
+#    ports:
+#        - 9200:9200
+#        - 9300:9300
+#
+#kibana:
+#    image: kibana:4.4.1
+#    container_name: kibana
+#    hostname: kibana
+#    ports:
+#        - 5601:5601
+#    links:
+#        - elasticsearch
+#
+#redis:
+#    image: redis:3.0.7-alpine
+#    container_name: redis
+#    hostname: redis
+#    ports:
+#        - 6379:6379
 
 jobmanager:
     build: flink
@@ -88,7 +86,7 @@ jobmanager:
     command: /usr/local/flink/bin/config-flink.sh jobmanager
     links:
         - kafka
-
+        - memsql
 worker:
     build: flink
     container_name: worker
@@ -98,4 +96,12 @@ worker:
     links:
         - jobmanager
         - kafka
+        - memsql
     command: /usr/local/flink/bin/config-flink.sh taskmanager
+
+memsql:
+    image: memsql/quickstart
+    container_name: memsql
+    ports:
+        - 3306:3306
+        - 9001:9000

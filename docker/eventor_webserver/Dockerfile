@@ -127,6 +127,7 @@ RUN touch /var/log/supervisord/logrotate.log
 ADD supervisord.conf /etc/
 ADD sysctl.conf /etc/
 ADD limits.conf /etc/security/
+ADD logrotate.sh /logrotate.sh
 
 #install lua modules
 RUN mkdir /tmp/lua-modules
