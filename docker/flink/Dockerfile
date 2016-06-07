@@ -28,7 +28,9 @@ RUN mv 51Degrees-LiteV3.2.dat 51degrees.dat
 
 RUN wget http://download.softagency.net/MySQL/Downloads/Connector-J/mysql-connector-java-5.1.39.zip
 RUN unzip mysql-connector-java-5.1.39.zip
-ENV CLASSPATH /mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar/:.
+RUN cp /mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /usr/local/flink/lib/
 
 RUN wget https://s3-eu-west-1.amazonaws.com/weba-deploy-processor/weba.jar
 RUN mv weba.jar app.jar
+
+WORKDIR /usr/local/flink
