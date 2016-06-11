@@ -119,7 +119,6 @@ RUN rm -rf /${LUA_NGINX_MODULE}
 RUN mkdir /var/log/requests
 ADD nginx.conf /etc/nginx/
 COPY default.conf /etc/nginx/conf.d/default.conf
-COPY index.json /usr/share/nginx/html/index.json
 
 RUN mkdir /var/log/supervisord
 RUN touch /var/log/supervisord/logrotate.log
@@ -128,6 +127,8 @@ ADD supervisord.conf /etc/
 ADD sysctl.conf /etc/
 ADD limits.conf /etc/security/
 ADD logrotate.sh /logrotate.sh
+
+COPY weba.min.js /usr/share/nginx/html/weba.min.js
 
 #install lua modules
 RUN mkdir /tmp/lua-modules
