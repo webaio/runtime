@@ -16,9 +16,8 @@ Vagrant.configure(2) do |config|
     docker events&
     echo "\n" >> .bashrc
     echo "alias eventor-webserver='docker exec -it eventor_webserver /bin/bash'" >> .bashrc
-    echo "alias eventor-flume='docker exec -it eventor_flume /bin/bash'" >> .bashrc
     echo "alias kafka='docker exec -it kafka /bin/bash'" >> .bashrc
-    echo "alias reload-docker-configuration='docker-compose stop && docker-compose build && docker-compose up -d'" >> .bashrc
+    echo "alias reload-docker-configuration='docker-compose stop && docker-compose rm -f && docker-compose build && docker-compose up -d'" >> .bashrc
     echo "\n" >> .bashrc
   SHELL
 end

@@ -6,7 +6,7 @@ zookeeper:
     - "2181:2181"
 
 kafka:
-  image: wurstmeister/kafka:0.9.0.1
+  image: wurstmeister/kafka:0.9.0.0-1
   container_name: kafka
   ports:
     - "9092:9092"
@@ -15,14 +15,20 @@ kafka:
     - zookeeper
   environment:
     KAFKA_ADVERTISED_HOST_NAME: 100.0.0.205
-    KAFKA_CREATE_TOPICS: "eventor_webserver:2:1"
+    KAFKA_CREATE_TOPICS: "eventor_webserver:20:1"
     KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+    KAFKA_DELETE_TOPIC_ENABLE: "true"
+    KAFKA_LOG_RETENTION_HOURS: 1
+    KAFKA_MESSAGE_MAX_BYTES: 100000000
+    KAFKA_REPLICA_FETCH_MAX_BYTES: 100000000
+    KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
+    KAFKA_NUM_PARTITIONS: 20
     JMX_PORT: 9999
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
 
 kafka_manager:
-    image: sheepkiller/kafka-manager
+    image: sheepkiller/kafka-manager:1.3.0.8
     container_name: kafka_manager
     hostname: kafka_manager
     links:
@@ -32,8 +38,8 @@ kafka_manager:
         - "9000:9000"
     environment:
         ZK_HOSTS: "zookeeper:2181"
-        KM_VERSION: "1.3.0.7"
-        KM_REVISION: "4b57fc9b65e6f9ac88fff4391994fd06bb782663"
+        KM_VERSION: "1.3.0.8"
+        KM_REVISION: "6e196ea7a332471bead747535f9676f0a2bad008"
 
 eventor_webserver:
     container_name: eventor_webserver
@@ -49,29 +55,28 @@ eventor_webserver:
         FLUME_PLUGINS_DIRECTORY: /opt/flume/plugins.d/
         FLUME_JAVA_OPTIONS: "-Xms1024m -Xmx2048m -Xss256k -XX:MaxDirectMemorySize=256m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
 
-#elasticsearch:
-#    image: elasticsearch:2.2
-#    container_name: elasticsearch
-#    hostname: elasticsearch
-#    ports:
-#        - 9200:9200
-#        - 9300:9300
-#
-#kibana:
-#    image: kibana:4.4.1
-#    container_name: kibana
-#    hostname: kibana
-#    ports:
-#        - 5601:5601
-#    links:
-#        - elasticsearch
-#
-#redis:
-#    image: redis:3.0.7-alpine
-#    container_name: redis
-#    hostname: redis
-#    ports:
-#        - 6379:6379
+elasticsearch:
+    image: elasticsearch:2.2
+    container_name: elasticsearch
+    hostname: elasticsearch
+    expose:
+       - 9200
+       - 9300
+    ports:
+        - 9200:9200
+        - 9300:9300
+    volumes:
+        - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        - ./elasticsearch/config/logging.yml:/usr/share/elasticsearch/config/logging.yml
+
+kibana:
+    image: kibana:4.4.1
+    container_name: kibana
+    hostname: kibana
+    ports:
+        - 5601:5601
+    links:
+        - elasticsearch
 
 jobmanager:
     build: flink
@@ -86,7 +91,7 @@ jobmanager:
     command: /usr/local/flink/bin/config-flink.sh jobmanager
     links:
         - kafka
-        - memsql
+        - elasticsearch
 worker:
     build: flink
     container_name: worker
@@ -96,12 +101,16 @@ worker:
     links:
         - jobmanager
         - kafka
-        - memsql
+        - elasticsearch
     command: /usr/local/flink/bin/config-flink.sh taskmanager
 
-memsql:
-    image: memsql/quickstart
-    container_name: memsql
+locust:
+    container_name: locust
+    build: locust
+    hostname: locust
+    links:
+        - eventor_webserver
     ports:
-        - 3306:3306
-        - 9001:9000
+        - 8089:8089
+    environment:
+        TARGET_URL: "http://100.0.0.205/"

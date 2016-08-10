@@ -1,6 +1,10 @@
 FROM java:openjdk-8-jre-alpine
 
 RUN apk add --update bash && apk add --update openssh && apk add --update curl && rm -rf /var/cache/apk/*
+RUN apk update
+RUN apk add ca-certificates
+RUN apk add openssl
+RUN update-ca-certificates
 
 RUN mkdir /var/run/sshd
 RUN /usr/bin/ssh-keygen -A
@@ -30,7 +34,7 @@ RUN wget http://download.softagency.net/MySQL/Downloads/Connector-J/mysql-connec
 RUN unzip mysql-connector-java-5.1.39.zip
 RUN cp /mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /usr/local/flink/lib/
 
-RUN wget https://s3-eu-west-1.amazonaws.com/weba-deploy-processor/weba.jar
-RUN mv weba.jar app.jar
+#RUN wget https://s3-eu-west-1.amazonaws.com/weba-deploy-processor/weba.jar
+#RUN mv weba.jar app.jar
 
 WORKDIR /usr/local/flink
