@@ -1,0 +1,67 @@
+{
+  "mappings": {
+    "webaio_events" : {
+      "dynamic": true,
+      "properties": {
+        "id" : {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "type" : {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "session": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "visitor": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        "payload": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "remote_addr" : {
+              "type": "ip"
+            }
+          }
+        },
+        "enriched": {
+          "properties": {
+            "localization": {
+              "properties" : {
+                "geo" : {
+                  "type": "geo_point"
+                }
+              }
+            },
+            "device": {
+              "properties" : {
+                "fingerprint" : {
+                  "properties" : {
+                    "fingerprint" : {
+                      "type": "string",
+                      "index": "not_analyzed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
