@@ -28,7 +28,7 @@ kafka:
     - /var/run/docker.sock:/var/run/docker.sock
 
 kafka_manager:
-    image: sheepkiller/kafka-manager:1.3.0.8
+    image: sheepkiller/kafka-manager:1.3.1.6
     container_name: kafka_manager
     hostname: kafka_manager
     links:
@@ -38,8 +38,8 @@ kafka_manager:
         - "9000:9000"
     environment:
         ZK_HOSTS: "zookeeper:2181"
-        KM_VERSION: "1.3.0.8"
-        KM_REVISION: "6e196ea7a332471bead747535f9676f0a2bad008"
+        KM_VERSION: "1.3.1.6"
+        KM_REVISION: "6cf43e383377a6b37df4faa04d9aff515a265b30"
 
 eventor_webserver:
     container_name: eventor_webserver
@@ -56,9 +56,14 @@ eventor_webserver:
         FLUME_JAVA_OPTIONS: "-Xms1024m -Xmx2048m -Xss256k -XX:MaxDirectMemorySize=256m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
 
 elasticsearch:
-    image: elasticsearch:2.2
+    image: elasticsearch:2.2.1
     container_name: elasticsearch
     hostname: elasticsearch
+    environment:
+      ES_HEAP_SIZE: "1g"
+      ES_HEAP_NEWSIZE: "512m"
+      ES_MIN_MEM: "512m"
+      ES_MAX_MEM: "2g"
     expose:
        - 9200
        - 9300
