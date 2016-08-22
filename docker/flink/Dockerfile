@@ -27,8 +27,4 @@ ADD conf/flink-conf.yaml /usr/local/flink/conf/
 ADD config-flink.sh /usr/local/flink/bin/
 RUN chmod +x /usr/local/flink/bin/config-flink.sh
 
-RUN wget https://22-54323604-gh.circle-artifacts.com/0//home/ubuntu/processor/build/libs/weba-all.jar
-RUN mv weba-all.jar weba.jar
-#RUN /usr/local/flink/bin/flink run -c io.weba.processor.flink.job.IngestEventsElasticsearchJob -p 2 weba.jar --kafka-bootstrap-servers ns381473.ip-94-23-248.eu:9092 --kafka-group-id IngestEventsElasticsearchJob --kafka-topic eventor_webserver --es-index webaio_events --es-type webaio_events --es-servers ns381473.ip-94-23-248.eu:9300 --es-cluster-name webaio
-
 WORKDIR /usr/local/flink
