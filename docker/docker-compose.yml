@@ -14,7 +14,7 @@ kafka:
   links:
     - zookeeper
   environment:
-    KAFKA_ADVERTISED_HOST_NAME: 100.0.0.205
+    KAFKA_ADVERTISED_HOST_NAME: 94.23.248.167
     KAFKA_CREATE_TOPICS: "eventor_webserver:20:1"
     KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
     KAFKA_DELETE_TOPIC_ENABLE: "true"
@@ -60,10 +60,10 @@ elasticsearch:
     container_name: elasticsearch
     hostname: elasticsearch
     environment:
-      ES_HEAP_SIZE: "1g"
-      ES_HEAP_NEWSIZE: "512m"
-      ES_MIN_MEM: "512m"
-      ES_MAX_MEM: "2g"
+      ES_HEAP_SIZE: "10g"
+      ES_HEAP_NEWSIZE: "10g"
+      ES_MIN_MEM: "1g"
+      ES_MAX_MEM: "16g"
     expose:
        - 9200
        - 9300
