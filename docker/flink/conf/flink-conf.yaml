@@ -1,10 +1,10 @@
 jobmanager.rpc.address: %jobmanager%
 jobmanager.rpc.port: 6123
-jobmanager.heap.mb: 128
+jobmanager.heap.mb: 1024
 
 taskmanager.rpc.port: 6121
 taskmanager.data.port: 6122
-taskmanager.heap.mb: 256
+taskmanager.heap.mb: 2048
 taskmanager.numberOfTaskSlots: %nb_slots%
 
 parallelization.degree.default: %parallelism%
