@@ -139,7 +139,7 @@ ADD sysctl.conf /etc/
 ADD limits.conf /etc/security/
 ADD logrotate.sh /logrotate.sh
 
-COPY weba.min.js /usr/share/nginx/html/weba.min.js
+COPY index.min.js /usr/share/nginx/html/index.min.js
 
 #install lua modules
 RUN mkdir /tmp/lua-modules
