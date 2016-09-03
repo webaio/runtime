@@ -15,9 +15,9 @@ kafka:
     links:
       - zookeeper
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 100.0.0.205
+      KAFKA_ADVERTISED_HOST_NAME: "ns381473.ip-94-23-248.eu"
       KAFKA_CREATE_TOPICS: "eventor_webserver:20:1"
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ZOOKEEPER_CONNECT: "ns381473.ip-94-23-248.eu:2181"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_LOG_RETENTION_HOURS: 1
@@ -27,7 +27,7 @@ kafka:
       KAFKA_NUM_PARTITIONS: 2
       JMX_PORT: 9999
       KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
-      KAFKA_JVM_PERFORMANCE_OPTS: "-XX:MaxPermSize=48M -verbose:gc -Xloggc:/var/log/kafka/gc.log -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -XX:+PrintTLAB -XX:+DisableExplicitGC -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M -XX:+UseCompressedOops -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/kafka/heapDump.log"
+      KAFKA_JVM_PERFORMANCE_OPTS: "-XX:MaxPermSize=48M -verbose:gc -Xloggc:/var/log/kafka-gc.log -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -XX:+PrintTLAB -XX:+DisableExplicitGC -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M -XX:+UseCompressedOops -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/kafka-heapDump.log"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
