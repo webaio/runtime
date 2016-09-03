@@ -42,7 +42,7 @@ def random_params():
         "cb":uuid.uuid4().__str__(),
         "vi":uuid.uuid4().__str__(),
         "si":uuid.uuid4().__str__(),
-        "st":str(int(time.time())) + "." + str(int(time.time())) + "." + str(int(time.time()) + 1800) + "." + str(int(time.time()))
+        "st":str(int(time.time() * 1000)) + "." + str(int(time.time() * 1000)) + "." + str(int((time.time()) + 1800) * 1000) + "." + str(int(time.time() * 1000))
     }
 
 def random_di():
@@ -85,7 +85,7 @@ def revisits(l):
 
         st = params["st"].split(".")
 
-        params["st"] = st[0] + "." + st[1] + "." + str(int(time.time()) + 1800) + "." + str(int(time.time()))
+        params["st"] = st[0] + "." + st[1] + "." + str(int((time.time()) + 1800) * 1000) + "." + str(int(time.time() * 1000))
 
         l.client.get("/", **{
             "params": params,

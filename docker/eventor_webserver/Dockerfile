@@ -139,8 +139,6 @@ ADD sysctl.conf /etc/
 ADD limits.conf /etc/security/
 ADD logrotate.sh /logrotate.sh
 
-COPY weba.min.js /usr/share/nginx/html/weba.min.js
-
 #install lua modules
 RUN mkdir /tmp/lua-modules
 WORKDIR /tmp/lua-modules
@@ -166,5 +164,9 @@ RUN gunzip GeoIP.dat.gz && gunzip GeoLiteCity.dat.gz
 RUN mkdir /usr/share/GeoIP/GeoIP/
 RUN mv GeoIP.dat /usr/share/GeoIP/GeoIP/GeoIP.dat
 RUN mv GeoLiteCity.dat /usr/share/GeoIP/GeoIP/GeoLiteCity.dat
+
+RUN mkdir -p /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+RUN wget https://39-54332672-gh.circle-artifacts.com/0//home/ubuntu/tracker/dist/index.min.js
 
 CMD supervisord -c /etc/supervisord.conf && nginx
