@@ -40,8 +40,8 @@ def random_params():
         "di":random_di(),
         "dt":"lorem ipsum lorem",
         "cb":uuid.uuid4().__str__(),
-        "vi":uuid.uuid4().__str__(),
-        "si":uuid.uuid4().__str__(),
+        "vid":uuid.uuid4().__str__(),
+        "sid":uuid.uuid4().__str__(),
         "st":str(int(time.time() * 1000)) + "." + str(int(time.time() * 1000)) + "." + str(int((time.time()) + 1800) * 1000) + "." + str(int(time.time() * 1000))
     }
 
