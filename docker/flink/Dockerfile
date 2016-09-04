@@ -4,6 +4,7 @@ RUN apk add --update bash && apk add --update openssh && apk add --update curl &
 RUN apk update
 RUN apk add ca-certificates
 RUN apk add openssl
+RUN apk add snappy
 RUN update-ca-certificates
 
 RUN mkdir /var/run/sshd

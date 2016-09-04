@@ -29,12 +29,21 @@
         },
         "payload": {
           "properties": {
-            "id": {
+            "tracker_id": {
               "type": "string",
               "index": "not_analyzed"
             },
-            "remote_addr" : {
-              "type": "ip"
+            "url_full": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "language": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "remote_addr": {
+              "type": "ip",
+              "index": "not_analyzed"
             }
           }
         },
