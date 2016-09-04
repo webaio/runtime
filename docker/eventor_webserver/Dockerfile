@@ -168,5 +168,6 @@ RUN mv GeoLiteCity.dat /usr/share/GeoIP/GeoIP/GeoLiteCity.dat
 RUN mkdir -p /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 RUN wget https://39-54332672-gh.circle-artifacts.com/0//home/ubuntu/tracker/dist/index.min.js
+RUN cp index.min.js weba.min.js
 
 CMD supervisord -c /etc/supervisord.conf && nginx
