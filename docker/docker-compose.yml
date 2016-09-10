@@ -1,3 +1,14 @@
+postgres:
+    image: postgres:9.6
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "mysecretpassword"
+      POSTGRES_DB: "weba"
+    #volumes:
+    #  - ./postgres/data:/var/lib/postgresql/data
+
 zookeeper:
     image: wurstmeister/zookeeper
     container_name: zookeeper
@@ -74,6 +85,8 @@ elasticsearch:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch/config/logging.yml:/usr/share/elasticsearch/config/logging.yml
+      #- ./elasticsearch/data:/usr/share/elasticsearch/data
+      #- ./elasticsearch/log:/usr/share/elasticsearch/log
 
 kibana:
     image: kibana:4.4.1
