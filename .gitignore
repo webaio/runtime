@@ -110,6 +110,7 @@ $RECYCLE.BIN/
 
 ### Vagrant template
 .vagrant/
+elasticsearch/data/*
 
 logs/
 

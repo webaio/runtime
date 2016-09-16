@@ -17,12 +17,14 @@ services:
           ipv4_address: 100.0.0.10
 
   weba_zookeeper:
-      image: wurstmeister/zookeeper
+      image: wurstmeister/zookeeper:3.4.6
       container_name: weba_zookeeper
       ports:
         - "2181:2181"
         - "2888:2888"
         - "3888:3888"
+#      volumes:
+#        - ./zookeeper/data:/opt/zookeeper-3.4.6/data
       networks:
         weba:
           ipv4_address: 100.0.0.11
@@ -37,7 +39,7 @@ services:
         - weba_zookeeper
       environment:
         KAFKA_ADVERTISED_HOST_NAME: 100.0.0.1
-        KAFKA_CREATE_TOPICS: "weba_events:4:1"
+        KAFKA_CREATE_TOPICS: "weba_events:2:1"
         KAFKA_ZOOKEEPER_CONNECT: "weba_zookeeper:2181"
         KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
         KAFKA_DELETE_TOPIC_ENABLE: "true"
@@ -45,7 +47,7 @@ services:
         KAFKA_MESSAGE_MAX_BYTES: 50000000
         KAFKA_REPLICA_FETCH_MAX_BYTES: 100000000
         KAFKA_FETCH_MESSAGE_MAX_BYTES: 100000000
-        KAFKA_NUM_PARTITIONS: 8
+        KAFKA_NUM_PARTITIONS: 2
         JMX_PORT: 9999
         #KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
         #KAFKA_JVM_PERFORMANCE_OPTS: "-XX:MaxPermSize=48M -verbose:gc -Xloggc:/var/log/kafka/gc.log -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -XX:+PrintTLAB -XX:+DisableExplicitGC -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M -XX:+UseCompressedOops -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/kafka/heapDump.log"
@@ -156,6 +158,7 @@ services:
         - weba_flink_jobmanager
         - weba_kafka
         - weba_elasticsearch
+        - weba_zookeeper
       command: /usr/local/flink/bin/config-flink.sh taskmanager
       networks:
         weba:
