@@ -40,10 +40,6 @@
             "language": {
               "type": "string",
               "index": "not_analyzed"
-            },
-            "remote_addr": {
-              "type": "ip",
-              "index": "not_analyzed"
             }
           }
         },
