@@ -1,6 +1,6 @@
 {
   "mappings": {
-    "webaio_events" : {
+    "events" : {
       "dynamic": true,
       "properties": {
         "id" : {

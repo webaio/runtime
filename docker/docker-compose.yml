@@ -7,9 +7,8 @@ services:
       hostname: weba_postgres
       ports:
         - "5432:5432"
-      environment:
-        POSTGRES_PASSWORD: "mysecretpassword"
-        POSTGRES_DB: "weba"
+      env_file:
+        - ./env/development.env
       volumes:
         - ./postgres/data:/var/lib/postgresql/data
       networks:
@@ -23,8 +22,6 @@ services:
         - "2181:2181"
         - "2888:2888"
         - "3888:3888"
-#      volumes:
-#        - ./zookeeper/data:/opt/zookeeper-3.4.6/data
       networks:
         weba:
           ipv4_address: 100.0.0.11
@@ -37,20 +34,8 @@ services:
         - "9999:9999"
       links:
         - weba_zookeeper
-      environment:
-        KAFKA_ADVERTISED_HOST_NAME: 100.0.0.1
-        KAFKA_CREATE_TOPICS: "weba_events:2:1"
-        KAFKA_ZOOKEEPER_CONNECT: "weba_zookeeper:2181"
-        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-        KAFKA_DELETE_TOPIC_ENABLE: "true"
-        KAFKA_LOG_RETENTION_HOURS: 1
-        KAFKA_MESSAGE_MAX_BYTES: 50000000
-        KAFKA_REPLICA_FETCH_MAX_BYTES: 100000000
-        KAFKA_FETCH_MESSAGE_MAX_BYTES: 100000000
-        KAFKA_NUM_PARTITIONS: 2
-        JMX_PORT: 9999
-        #KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
-        #KAFKA_JVM_PERFORMANCE_OPTS: "-XX:MaxPermSize=48M -verbose:gc -Xloggc:/var/log/kafka/gc.log -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -XX:+PrintTLAB -XX:+DisableExplicitGC -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M -XX:+UseCompressedOops -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/kafka/heapDump.log"
+      env_file:
+        - ./env/development.env
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
       networks:
@@ -66,12 +51,8 @@ services:
         - weba_kafka
       ports:
         - "9000:9000"
-      environment:
-        ZK_HOSTS: "weba_zookeeper:2181"
-        KM_VERSION: "1.3.1.6"
-        KM_REVISION: "6cf43e383377a6b37df4faa04d9aff515a265b30"
-        KM_USERNAME: weba
-        KM_PASSWORD: v2_5Ma?(+G[t!@;7
+      env_file:
+        - ./env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.13
@@ -84,11 +65,8 @@ services:
          - weba_kafka
       ports:
          - 80:80
-      environment:
-        FLUME_CONF_FILE: /opt/flume/conf/flume.conf
-        FLUME_AGENT_NAME: a1
-        FLUME_PLUGINS_DIRECTORY: /opt/flume/plugins.d/
-        FLUME_JAVA_OPTIONS: "-Xms1024m -Xmx2048m -Xss256k -XX:MaxDirectMemorySize=256m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC"
+      env_file:
+        - ./env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.14
@@ -97,11 +75,8 @@ services:
       image: elasticsearch:2.2.1
       container_name: weba_elasticsearch
       hostname: weba_elasticsearch
-      environment:
-        ES_HEAP_SIZE: "1g"
-        ES_HEAP_NEWSIZE: "1g"
-        ES_MIN_MEM: "512m"
-        ES_MAX_MEM: "4g"
+      env_file:
+        - ./env/development.env
       ports:
         - 9200:9200
         - 9300:9300
@@ -122,6 +97,8 @@ services:
         - 5601:5601
       links:
         - weba_elasticsearch
+      env_file:
+        - ./env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.16
@@ -135,11 +112,13 @@ services:
         - 6123:6123
       expose:
         - 22
-      command: /usr/local/flink/bin/config-flink.sh jobmanager
+      command: /usr/local/flink/bin/config-flink.sh weba_flink_jobmanager
       links:
         - weba_kafka
         - weba_elasticsearch
         - weba_zookeeper
+      env_file:
+        - ./env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.17
@@ -159,7 +138,9 @@ services:
         - weba_kafka
         - weba_elasticsearch
         - weba_zookeeper
-      command: /usr/local/flink/bin/config-flink.sh taskmanager
+      command: /usr/local/flink/bin/config-flink.sh weba_flink_worker
+      env_file:
+        - ./env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.18
@@ -172,8 +153,8 @@ services:
         - weba_entrypoint
       ports:
         - 8089:8089
-      environment:
-        TARGET_URL: "http://100.0.0.1/"
+      env_file:
+        - ./env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.19

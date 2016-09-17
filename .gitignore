@@ -110,7 +110,9 @@ $RECYCLE.BIN/
 
 ### Vagrant template
 .vagrant/
-elasticsearch/data/*
+docker/elasticsearch/data/*
+docker/postgres/data/*
+docker/zookeeper/data/*
 
 logs/
 
