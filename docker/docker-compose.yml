@@ -8,9 +8,7 @@ services:
       ports:
         - "5432:5432"
       env_file:
-        - ./env/development.env
-      volumes:
-        - ./postgres/data:/var/lib/postgresql/data
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.10
@@ -35,7 +33,7 @@ services:
       links:
         - weba_zookeeper
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
       networks:
@@ -52,7 +50,7 @@ services:
       ports:
         - "9000:9000"
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.13
@@ -66,7 +64,7 @@ services:
       ports:
          - 80:80
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.14
@@ -76,7 +74,7 @@ services:
       container_name: weba_elasticsearch
       hostname: weba_elasticsearch
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       ports:
         - 9200:9200
         - 9300:9300
@@ -98,7 +96,7 @@ services:
       links:
         - weba_elasticsearch
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.16
@@ -118,7 +116,7 @@ services:
         - weba_elasticsearch
         - weba_zookeeper
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.17
@@ -140,7 +138,7 @@ services:
         - weba_zookeeper
       command: /usr/local/flink/bin/config-flink.sh weba_flink_worker
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.18
@@ -154,7 +152,7 @@ services:
       ports:
         - 8089:8089
       env_file:
-        - ./env/development.env
+        - ../env/development.env
       networks:
         weba:
           ipv4_address: 100.0.0.19

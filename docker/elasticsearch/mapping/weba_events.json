@@ -1,6 +1,6 @@
 {
   "mappings": {
-    "events" : {
+    "weba_events" : {
       "dynamic": true,
       "properties": {
         "id" : {
@@ -40,6 +40,9 @@
             "language": {
               "type": "string",
               "index": "not_analyzed"
+            },
+            "remote_addr": {
+              "type": "ip"
             }
           }
         },
