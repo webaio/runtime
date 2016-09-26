@@ -115,6 +115,7 @@ services:
         - weba_kafka
         - weba_elasticsearch
         - weba_zookeeper
+        - weba_graphite
       env_file:
         - ../env/development.env
       networks:
@@ -136,6 +137,7 @@ services:
         - weba_kafka
         - weba_elasticsearch
         - weba_zookeeper
+        - weba_graphite
       command: /usr/local/flink/bin/config-flink.sh weba_flink_worker
       env_file:
         - ../env/development.env
@@ -156,6 +158,25 @@ services:
       networks:
         weba:
           ipv4_address: 100.0.0.19
+
+  weba_graphite:
+      image: hopsoft/graphite-statsd:v0.9.15-phusion0.9.18
+      container_name: weba_graphite
+      hostname: weba_graphite
+      hostname: weba_graphite
+      ports:
+        - 2080:80
+        - 2003:2003
+        - 2004:2004
+        - 2023:2023
+        - 2024:2024
+        - 8125:8125
+        - 8126:8126
+      env_file:
+        - ../env/development.env
+      networks:
+        weba:
+          ipv4_address: 100.0.0.20
 
 networks:
   weba:
