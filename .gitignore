@@ -88,7 +88,7 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 .nb-gradle/
-### Windows template
+### Windows templategit
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
