@@ -9,9 +9,11 @@ services:
         - "5432:5432"
       env_file:
         - ../env/development.env
+      volumes:
+        - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
       networks:
         weba:
-          ipv4_address: 100.0.0.10
+            ipv4_address: 100.0.0.10
 
   weba_zookeeper:
       image: wurstmeister/zookeeper:3.4.6
@@ -69,38 +71,6 @@ services:
         weba:
           ipv4_address: 100.0.0.14
 
-  weba_elasticsearch:
-      image: elasticsearch:2.2.1
-      container_name: weba_elasticsearch
-      hostname: weba_elasticsearch
-      env_file:
-        - ../env/development.env
-      ports:
-        - 9200:9200
-        - 9300:9300
-      volumes:
-        - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-        - ./elasticsearch/config/logging.yml:/usr/share/elasticsearch/config/logging.yml
-        - ./elasticsearch/data:/usr/share/elasticsearch/data
-        - ./elasticsearch/log:/usr/share/elasticsearch/log
-      networks:
-        weba:
-          ipv4_address: 100.0.0.15
-
-  weba_kibana:
-      image: kibana:4.4.1
-      container_name: weba_kibana
-      hostname: weba_kibana
-      ports:
-        - 5601:5601
-      links:
-        - weba_elasticsearch
-      env_file:
-        - ../env/development.env
-      networks:
-        weba:
-          ipv4_address: 100.0.0.16
-
   weba_flink_jobmanager:
       build: flink
       container_name: weba_flink_jobmanager
@@ -113,7 +83,6 @@ services:
       command: /usr/local/flink/bin/config-flink.sh weba_flink_jobmanager
       links:
         - weba_kafka
-        - weba_elasticsearch
         - weba_zookeeper
         - weba_graphite
       env_file:
@@ -135,7 +104,6 @@ services:
       links:
         - weba_flink_jobmanager
         - weba_kafka
-        - weba_elasticsearch
         - weba_zookeeper
         - weba_graphite
       command: /usr/local/flink/bin/config-flink.sh weba_flink_worker
@@ -163,7 +131,6 @@ services:
       image: hopsoft/graphite-statsd:v0.9.15-phusion0.9.18
       container_name: weba_graphite
       hostname: weba_graphite
-      hostname: weba_graphite
       ports:
         - 2080:80
         - 2003:2003
@@ -177,6 +144,112 @@ services:
       networks:
         weba:
           ipv4_address: 100.0.0.20
+
+  weba_druid_overlord:
+    image: znly/druid:0.9.1.1
+    container_name: weba_druid_overlord
+    env_file:
+      - ../env/development.env
+    links:
+      - weba_postgres
+      - weba_zookeeper
+    volumes:
+      - ./druid/_common/common.runtime.properties/:/opt/druid/conf/druid/_common/common.runtime.properties
+    command:
+      - overlord
+    ports:
+      - "58090:8090"
+    networks:
+      weba:
+        ipv4_address: 100.0.0.21
+
+  weba_druid_coordinator:
+    image: znly/druid:0.9.1.1
+    container_name: weba_druid_coordinator
+    env_file:
+      - ../env/development.env
+    links:
+      - weba_postgres
+      - weba_zookeeper
+    volumes:
+      - ./druid/_common/common.runtime.properties/:/opt/druid/conf/druid/_common/common.runtime.properties
+    command:
+      - coordinator
+    ports:
+      - "58081:8081"
+    networks:
+      weba:
+        ipv4_address: 100.0.0.22
+
+  weba_druid_middlemanager:
+    image: znly/druid:0.9.1.1
+    container_name: weba_druid_middlemanager
+    env_file:
+      - ../env/development.env
+    ports:
+      - "58091:8091"
+    links:
+      - weba_postgres
+      - weba_zookeeper
+    volumes:
+      - ./druid/_common/common.runtime.properties/:/opt/druid/conf/druid/_common/common.runtime.properties
+    command:
+      - middleManager
+    networks:
+      weba:
+        ipv4_address: 100.0.0.23
+
+  weba_druid_historical:
+    image: znly/druid:0.9.1.1
+    container_name: weba_druid_historical
+    env_file:
+      - ../env/development.env
+    ports:
+      - "58083:8083"
+    links:
+      - weba_postgres
+      - weba_zookeeper
+    volumes:
+      - ./druid/_common/common.runtime.properties/:/opt/druid/conf/druid/_common/common.runtime.properties
+    command:
+      - historical
+    networks:
+      weba:
+        ipv4_address: 100.0.0.24
+
+  weba_druid_broker:
+    image: znly/druid:0.9.1.1
+    container_name: weba_druid_broker
+    env_file:
+      - ../env/development.env
+    ports:
+      - "58082:8082"
+    links:
+      - weba_postgres
+      - weba_zookeeper
+    volumes:
+      - ./druid/_common/common.runtime.properties/:/opt/druid/conf/druid/_common/common.runtime.properties
+    command:
+      - broker
+    networks:
+      weba:
+          ipv4_address: 100.0.0.25
+
+  weba_caravel:
+    image: amancevice/caravel
+    container_name: weba_caravel
+    env_file:
+      - ../env/development.env
+    volumes:
+      - ./caravel:/home/caravel/db
+    links:
+      - weba_druid_broker
+      - weba_druid_coordinator
+    ports:
+      - "58088:8088"
+    networks:
+      weba:
+        ipv4_address: 100.0.0.26
 
 networks:
   weba:

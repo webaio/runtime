@@ -113,6 +113,7 @@ $RECYCLE.BIN/
 docker/elasticsearch/data/*
 docker/postgres/data/*
 docker/zookeeper/data/*
+docker/caravel/caravel.db
 
 logs/
 
