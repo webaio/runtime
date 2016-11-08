@@ -88,7 +88,7 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 .nb-gradle/
-### Windows template
+### Windows templategit
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -110,7 +110,12 @@ $RECYCLE.BIN/
 
 ### Vagrant template
 .vagrant/
+docker/elasticsearch/data/*
+docker/postgres/data/*
+docker/zookeeper/data/*
 
 logs/
 
 /docker/flink/weba.io-metrics-0.0.1.jar
+docker/elasticsearch/data/
+docker/elasticsearch/log/

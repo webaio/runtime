@@ -1,9 +1,9 @@
 from locust import HttpLocust, TaskSet
-import random, uuid
+import random, uuid, time
 
-useragents = open("useragents").readlines()
-urls = open("urls").readlines()
-ips = open("ips").readlines()
+useragents = open("/benchmark/useragents").readlines()
+urls = open("/benchmark/urls").readlines()
+ips = open("/benchmark/ips").readlines()
 tracker_ids = []
 visitors = []
 
@@ -29,29 +29,27 @@ def random_ip():
 
 def random_params():
     return {
-        "u": random_url(),
-        "t": random_tracker_id(),
-        "e": 0,
-        "w": 1280,
-        "h": 960,
-        "aw": 1280,
-        "ah": 960,
-        "d1": int(random.getrandbits(1)),
-        "d2": int(random.getrandbits(1)),
-        "d3": int(random.getrandbits(1)),
-        "d4": int(random.getrandbits(1)),
-        "d5": int(random.getrandbits(1)),
-        "d6": int(random.getrandbits(1)),
-        "d7": int(random.getrandbits(1)),
-        "d8": int(random.getrandbits(1)),
-        "d9": int(random.getrandbits(1)),
-        "d10": int(random.getrandbits(1)),
-        "d11": int(random.getrandbits(1)),
-        "d12": int(random.getrandbits(1)),
-        "d13": int(random.getrandbits(1)),
-        "d14": int(random.getrandbits(1))
+        "e":"pageView",
+        "l":"pl",
+        "t":random_tracker_id(),
+        "de":"UTF-8",
+        "dl":random_url(),
+        "sr":"1674x557",
+        "sv":"1680x1050",
+        "cd":24,
+        "di":random_di(),
+        "dt":"lorem ipsum lorem",
+        "cb":uuid.uuid4().__str__(),
+        "vid":uuid.uuid4().__str__(),
+        "sid":uuid.uuid4().__str__(),
+        "st":str(int(time.time() * 1000)) + "." + str(int(time.time() * 1000)) + "." + str(int((time.time()) + 1800) * 1000) + "." + str(int(time.time() * 1000))
     }
 
+def random_di():
+        di = "1"
+        for x in range(1, 13):
+            di = di + str(int(random.getrandbits(1)))
+        return hex(int(di, 2))
 
 def visits(l):
     params = random_params()
@@ -83,7 +81,11 @@ def revisits(l):
         revisit = random.choice(visitors)
 
         params = revisit["params"]
-        params["u"] = random_url()
+        params["dl"] = random_url()
+
+        st = params["st"].split(".")
+
+        params["st"] = st[0] + "." + st[1] + "." + str(int((time.time()) + 1800) * 1000) + "." + str(int(time.time() * 1000))
 
         l.client.get("/", **{
             "params": params,
@@ -93,7 +95,7 @@ def revisits(l):
 
 
 class UserBehavior(TaskSet):
-    tasks = {visits: 2, revisits: 1}
+    tasks = {visits: 1, revisits: 2}
 
 
 class WebsiteUser(HttpLocust):

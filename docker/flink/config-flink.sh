@@ -6,14 +6,14 @@ EXEC=/usr/local/flink/bin
 sed -i -e "s/%nb_slots%/`grep -c ^processor /proc/cpuinfo`/g" $CONF/flink-conf.yaml
 sed -i -e "s/%parallelism%/1/g" $CONF/flink-conf.yaml
 
-if [ "$1" = "jobmanager" ]; then
+if [ "$1" = "weba_flink_jobmanager" ]; then
     echo "Configuring Job Manager on this node"
-    sed -i -e "s/%jobmanager%/`hostname -i`/g" $CONF/flink-conf.yaml
+    sed -i -e "s/%jobmanager%/$WEBA_FLINK_JOBMANAGER_HOSTNAME/g" $CONF/flink-conf.yaml
     $EXEC/jobmanager.sh start cluster
 
-elif [ "$1" = "taskmanager" ]; then
+elif [ "$1" = "weba_flink_worker" ]; then
     echo "Configuring Task Manager on this node"
-    sed -i -e "s/%jobmanager%/$JOBMANAGER_PORT_6123_TCP_ADDR/g" $CONF/flink-conf.yaml
+    sed -i -e "s/%jobmanager%/$WEBA_FLINK_JOBMANAGER_HOSTNAME/g" $CONF/flink-conf.yaml
     $EXEC/taskmanager.sh start
 fi
 

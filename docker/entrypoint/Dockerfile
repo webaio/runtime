@@ -1,9 +1,9 @@
 # Based on manual compile instructions at http://wiki.nginx.org/HttpLuaModule#Installation
 FROM ubuntu:14.04
 
-ENV VER_NGINX_DEVEL_KIT=0.2.19
-ENV VER_LUA_NGINX_MODULE=0.10.0
-ENV VER_NGINX=1.9.10
+ENV VER_NGINX_DEVEL_KIT=0.3.0
+ENV VER_LUA_NGINX_MODULE=0.10.5
+ENV VER_NGINX=1.9.12
 ENV VER_LUAJIT=2.0.4
 
 ENV NGINX_DEVEL_KIT ngx_devel_kit-${VER_NGINX_DEVEL_KIT}
@@ -33,10 +33,6 @@ RUN wget -qO- http://ftp.piotrkosoft.net/pub/mirrors/ftp.apache.org/flume/1.6.0/
 ADD start-flume.sh /opt/flume/bin/start-flume
 ADD flume.conf /opt/flume/conf/
 
-COPY lib flume-libs
-RUN mkdir /opt/flume/plugins.d/
-RUN cp -rf /flume-libs/* /opt/flume/plugins.d
-
 ENV PATH /opt/flume/bin:$PATH
 
 # ***** BUILD DEPENDENCIES *****
@@ -65,6 +61,19 @@ RUN tar -xzvf ${NGINX_DEVEL_KIT}.tar.gz && rm ${NGINX_DEVEL_KIT}.tar.gz
 RUN tar -xzvf ${LUA_NGINX_MODULE}.tar.gz && rm ${LUA_NGINX_MODULE}.tar.gz
 
 # ***** BUILD FROM SOURCE *****
+
+# install 51degrees module
+RUN mkdir /tmp/51degrees
+RUN mkdir /usr/local/share/51Degrees_module
+WORKDIR /tmp/51degrees
+RUN wget https://raw.githubusercontent.com/51Degrees/Java-Device-Detection/master/data/51Degrees-LiteV3.2.trie
+RUN wget https://github.com/51Degrees/Device-Detection/archive/v3.2.6.4.tar.gz
+RUN mv 51Degrees-LiteV3.2.trie /usr/local/share/51Degrees_module
+RUN tar -xzvf v3.2.6.4.tar.gz
+WORKDIR /tmp/51degrees/Device-Detection-3.2.6.4/nginx
+RUN make build trie
+RUN make test
+RUN cp -r /tmp/51degrees/Device-Detection-3.2.6.4/nginx/51Degrees_module/* /usr/local/share/51Degrees_module
 
 # LuaJIT
 WORKDIR /LuaJIT-${VER_LUAJIT}
@@ -97,7 +106,9 @@ RUN ./configure \
     --with-http_stub_status_module \
     --with-http_gzip_static_module \
     --prefix=${NGINX_ROOT} \
-    --with-ld-opt="-Wl,-rpath,${LUAJIT_LIB}" --add-module=/${NGINX_DEVEL_KIT} \
+    --with-ld-opt="-Wl,-rpath,${LUAJIT_LIB},-lm" --add-module=/${NGINX_DEVEL_KIT} \
+    --with-cc-opt="-DFIFTYONEDEGREES_TRIE -DFIFTYONEDEGREES_NO_THREADING" \
+    --add-module=/usr/local/share/51Degrees_module \
     --add-module=/${LUA_NGINX_MODULE}
 RUN make -j2
 RUN make install
@@ -128,8 +139,6 @@ ADD sysctl.conf /etc/
 ADD limits.conf /etc/security/
 ADD logrotate.sh /logrotate.sh
 
-COPY weba.min.js /usr/share/nginx/html/weba.min.js
-
 #install lua modules
 RUN mkdir /tmp/lua-modules
 WORKDIR /tmp/lua-modules
@@ -139,15 +148,11 @@ RUN tar -xzvf v0.09.tar.gz && rm v0.09.tar.gz && mv lua-resty-string-0.09 lua-re
 RUN wget https://github.com/cloudflare/lua-resty-cookie/archive/v0.1.0.tar.gz
 RUN tar -xzvf v0.1.0.tar.gz && rm v0.1.0.tar.gz && mv lua-resty-cookie-0.1.0 lua-resty-cookie
 
-RUN wget https://github.com/doujiang24/lua-resty-kafka/archive/v0.05.tar.gz
-RUN tar -xzvf v0.05.tar.gz && rm v0.05.tar.gz && mv lua-resty-kafka-0.05 lua-resty-kafka
-
 RUN wget https://github.com/tcjennings/LUA-RFC-4122-UUID-Generator/archive/master.zip
 RUN unzip master.zip
 
 RUN cp -rf /tmp/lua-modules/lua-resty-cookie/lib/* /usr/local/share/lua/5.1/
 RUN cp -rf /tmp/lua-modules/lua-resty-string/lib/* /usr/local/share/lua/5.1/
-RUN cp -rf /tmp/lua-modules/lua-resty-kafka/lib/* /usr/local/share/lua/5.1/
 RUN mkdir /usr/local/share/lua/5.1/uuid
 RUN cp -rf /tmp/lua-modules/LUA-RFC-4122-UUID-Generator-master/* /usr/local/share/lua/5.1/uuid
 
@@ -159,5 +164,9 @@ RUN gunzip GeoIP.dat.gz && gunzip GeoLiteCity.dat.gz
 RUN mkdir /usr/share/GeoIP/GeoIP/
 RUN mv GeoIP.dat /usr/share/GeoIP/GeoIP/GeoIP.dat
 RUN mv GeoLiteCity.dat /usr/share/GeoIP/GeoIP/GeoLiteCity.dat
+
+RUN mkdir -p /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+RUN wget https://39-54332672-gh.circle-artifacts.com/0//home/ubuntu/tracker/dist/index.min.js
 
 CMD supervisord -c /etc/supervisord.conf && nginx
