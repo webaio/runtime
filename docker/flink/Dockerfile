@@ -31,5 +31,5 @@ RUN chmod +x /usr/local/flink/bin/config-flink.sh
 RUN mkdir /tmp/snappy
 
 WORKDIR /usr/local/flink
-RUN wget https://23-54323604-gh.circle-artifacts.com/0//home/ubuntu/processor/build/libs/weba-all.jar
+RUN wget https://30-54323604-gh.circle-artifacts.com/0/home/ubuntu/processor/build/libs/weba-all.jar
 RUN mv weba-all.jar weba.jar
