@@ -15,7 +15,7 @@ ENV LUAJIT_LIB /usr/local/lib
 ENV LUAJIT_INC /usr/local/include/luajit-2.0
 
 RUN apt-get -qq update
-RUN apt-get -qq -y install wget vim-nox python-setuptools geoip-bin geoip-database geoip-dbg libgeoip-dev
+RUN apt-get -qq -y install wget vim-nox python-setuptools geoip-bin geoip-database geoip-dbg libgeoip-dev jq curl
 RUN apt-get -qq -y install unzip
 RUN easy_install supervisor
 
@@ -138,6 +138,7 @@ ADD supervisord.conf /etc/
 ADD sysctl.conf /etc/
 ADD limits.conf /etc/security/
 ADD logrotate.sh /logrotate.sh
+ADD update-tracker.sh /update-tracker.sh
 
 #install lua modules
 RUN mkdir /tmp/lua-modules
@@ -166,6 +167,5 @@ RUN mv GeoLiteCity.dat /usr/share/GeoIP/GeoIP/GeoLiteCity.dat
 
 RUN mkdir -p /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
-RUN wget https://39-54332672-gh.circle-artifacts.com/0//home/ubuntu/tracker/dist/index.min.js
-
+RUN sh /update-tracker.sh
 CMD supervisord -c /etc/supervisord.conf && nginx
