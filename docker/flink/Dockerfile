@@ -5,6 +5,7 @@ RUN apk update
 RUN apk add ca-certificates
 RUN apk add openssl
 RUN apk add snappy
+RUN apk add jq
 RUN update-ca-certificates
 
 RUN mkdir /var/run/sshd
@@ -27,9 +28,11 @@ ENV PATH $PATH:$FLINK_HOME/bin
 ADD conf/flink-conf.yaml /usr/local/flink/conf/
 ADD config-flink.sh /usr/local/flink/bin/
 RUN chmod +x /usr/local/flink/bin/config-flink.sh
+ADD get-processor-artifact.sh /usr/local/flink/get-processor-artifact.sh
+RUN chmod +x /usr/local/flink/get-processor-artifact.sh
 
 RUN mkdir /tmp/snappy
 
 WORKDIR /usr/local/flink
-RUN wget https://30-54323604-gh.circle-artifacts.com/0/home/ubuntu/processor/build/libs/weba-all.jar
-RUN mv weba-all.jar weba.jar
+
+RUN sh /usr/local/flink/get-processor-artifact.sh
