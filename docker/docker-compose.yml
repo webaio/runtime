@@ -11,6 +11,7 @@ services:
         - ../env/development.env
       volumes:
         - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
+       # - ./postgres/data:/var/lib/postgresql/data/pgdata
       networks:
         weba:
             ipv4_address: 100.0.0.10
@@ -84,7 +85,6 @@ services:
       links:
         - weba_kafka
         - weba_zookeeper
-        - weba_graphite
       env_file:
         - ../env/development.env
       networks:
@@ -105,7 +105,6 @@ services:
         - weba_flink_jobmanager
         - weba_kafka
         - weba_zookeeper
-        - weba_graphite
       command: /usr/local/flink/bin/config-flink.sh weba_flink_worker
       env_file:
         - ../env/development.env
@@ -126,24 +125,6 @@ services:
       networks:
         weba:
           ipv4_address: 100.0.0.19
-
-  weba_graphite:
-      image: hopsoft/graphite-statsd:v0.9.15-phusion0.9.18
-      container_name: weba_graphite
-      hostname: weba_graphite
-      ports:
-        - 2080:80
-        - 2003:2003
-        - 2004:2004
-        - 2023:2023
-        - 2024:2024
-        - 8125:8125
-        - 8126:8126
-      env_file:
-        - ../env/development.env
-      networks:
-        weba:
-          ipv4_address: 100.0.0.20
 
   weba_druid_overlord:
     image: znly/druid:0.9.1.1
@@ -235,25 +216,41 @@ services:
       weba:
           ipv4_address: 100.0.0.25
 
-  weba_caravel:
-    image: amancevice/caravel
-    container_name: weba_caravel
+  weba_superset:
+    image: amancevice/superset
+    container_name: weba_superset
     env_file:
       - ../env/development.env
     volumes:
-      - ./caravel:/home/caravel/db
+      - "./superset/superset_config.py:/home/superset/superset_config.py"
+      - "./superset/db:/home/superset/db"
     links:
       - weba_druid_broker
       - weba_druid_coordinator
+      - weba_redis
+      - weba_postgres
     ports:
       - "58088:8088"
     networks:
       weba:
         ipv4_address: 100.0.0.26
 
+  weba_redis:
+    container_name: weba_redis
+    image: redis:alpine
+    hostname: weba_redis
+    restart: always
+    volumes:
+      - ./redis:/data
+    networks:
+      weba:
+        ipv4_address: 100.0.0.27
+
 networks:
   weba:
     driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
     ipam:
       driver: default
       config:

@@ -1,0 +1,13 @@
+import os
+
+MAPBOX_API_KEY = os.getenv('SUPERSET_MAPBOX_API_KEY', 'TCrGaanoC2s7gT')
+CACHE_CONFIG = {
+    'CACHE_TYPE': os.getenv('SUPERSET_CACHE_TYPE', 'redis'),
+    'CACHE_DEFAULT_TIMEOUT': os.getenv('SUPERSET_CACHE_DEFAULT_TIMEOUT', 300),
+    'CACHE_KEY_PREFIX': os.getenv('SUPERSET_CACHE_KEY_PREFIX', 'superset_'),
+    'CACHE_REDIS_HOST': os.getenv('SUPERSET_CACHE_REDIS_HOST', '100.0.0.27'),
+    'CACHE_REDIS_PORT': os.getenv('SUPERSET_CACHE_REDIS_PORT', 6379),
+    'CACHE_REDIS_DB': os.getenv('SUPERSET_CACHE_REDIS_DB', 1),
+    'CACHE_REDIS_URL': os.getenv('SUPERSET_CACHE_REDIS_URL', 'redis://100.0.0.27:6379/1')}
+SQLALCHEMY_DATABASE_URI = os.getenv('SUPERSET_SQLALCHEMY_DATABASE_URI', 'postgresql://superset:superset@100.0.0.10/superset')
+SECRET_KEY = os.getenv('SUPERSET_SECRET_KEY', 'TCrGaanoC2s7gT')

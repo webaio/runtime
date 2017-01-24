@@ -111,7 +111,7 @@ $RECYCLE.BIN/
 ### Vagrant template
 .vagrant/
 docker/elasticsearch/data/*
-docker/postgres/data/*
+docker/postgres/pgdata/*
 docker/zookeeper/data/*
 docker/caravel/caravel.db
 
