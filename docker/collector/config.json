@@ -1,0 +1,19 @@
+{
+  "io.weba.collector.tracker.http.port": 80,
+  "io.weba.collector.tracker.verticle.class": "io.weba.collector.verticle.TrackerVerticle",
+  "io.weba.collector.kafka.verticle.workers": 4,
+  "io.weba.collector.kafka.verticle.class": "com.hubrick.vertx.kafka.producer.KafkaProducerServiceVerticle",
+  "io.weba.collector.kafka.producer": {
+    "address": "weba_events",
+    "defaultTopic": "weba_events",
+    "brokerList": "100.0.0.1:9092",
+    "requiredAcks": -1,
+    "type": "async",
+    "maxRetries": 3,
+    "retryBackoffMs": 100,
+    "bufferingMaxMs": 5000,
+    "bufferingMaxMessages": 10000,
+    "enqueueTimeout": -1,
+    "batchMessageNum": 200
+  }
+}

@@ -18,9 +18,9 @@ RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/ss
 ENV JAVA_HOME /usr/lib/jvm/default-jvm
 
 RUN mkdir ~/downloads
-RUN cd ~/downloads && wget http://ftp.piotrkosoft.net/pub/mirrors/ftp.apache.org/flink/flink-1.1.1/flink-1.1.1-bin-hadoop27-scala_2.11.tgz
-RUN tar zxvf ~/downloads/flink-1.1.1-bin-hadoop27-scala_2.11.tgz -C ~/downloads
-RUN mv ~/downloads/flink-1.1.1 /usr/local/flink
+RUN cd ~/downloads && wget http://ftp.piotrkosoft.net/pub/mirrors/ftp.apache.org/flink/flink-1.2.0/flink-1.2.0-bin-hadoop27-scala_2.11.tgz
+RUN tar zxvf ~/downloads/flink-1.2.0-bin-hadoop27-scala_2.11.tgz -C ~/downloads
+RUN mv ~/downloads/flink-1.2.0 /usr/local/flink
 
 ENV FLINK_HOME /usr/local/flink
 ENV PATH $PATH:$FLINK_HOME/bin
