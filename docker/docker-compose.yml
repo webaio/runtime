@@ -11,7 +11,7 @@ services:
         - ../env/development.env
       volumes:
         - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
-       # - ./postgres/data:/var/lib/postgresql/data/pgdata
+        - ../data/postgres:/var/lib/postgresql/data/pgdata
       networks:
         weba:
             ipv4_address: 100.0.0.10
@@ -223,7 +223,7 @@ services:
       - ../env/development.env
     volumes:
       - "./superset/superset_config.py:/home/superset/superset_config.py"
-      - "./superset/db:/home/superset/db"
+      - "../data/superset/db:/home/superset/db"
     links:
       - weba_druid_broker
       - weba_druid_coordinator
@@ -241,7 +241,7 @@ services:
     hostname: weba_redis
     restart: always
     volumes:
-      - ./redis:/data
+      - ../data/redis:/data
     networks:
       weba:
         ipv4_address: 100.0.0.27

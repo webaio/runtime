@@ -120,3 +120,7 @@ logs/
 /docker/flink/weba.io-metrics-0.0.1.jar
 docker/elasticsearch/data/
 docker/elasticsearch/log/
+data/postgres/*
+data/redis/*
+data/superset/*
+data/zookeeper/*
