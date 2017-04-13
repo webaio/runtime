@@ -55,10 +55,10 @@ services:
         weba:
           ipv4_address: 100.0.0.13
 
-  weba_entrypoint:
-      container_name: weba_entrypoint
-      build: entrypoint
-      hostname: weba_entrypoint
+  weba_collector:
+      container_name: weba_collector
+      build: collector
+      hostname: weba_collector
       links:
          - weba_kafka
       ports:
@@ -145,19 +145,19 @@ services:
         weba:
           ipv4_address: 100.0.0.18
 
-  weba_locust:
-      container_name: weba_locust
-      build: locust
-      hostname: weba_locust
-      links:
-        - weba_entrypoint
-      ports:
-        - 8089:8089
-      env_file:
-        - ../env/development.env
-      networks:
-        weba:
-          ipv4_address: 100.0.0.19
+#  weba_locust:
+#      container_name: weba_locust
+#      build: locust
+#      hostname: weba_locust
+#      links:
+#        - weba_entrypoint
+#      ports:
+#        - 8089:8089
+#      env_file:
+#        - ../env/development.env
+#      networks:
+#        weba:
+#          ipv4_address: 100.0.0.19
 
   weba_graphite:
       image: hopsoft/graphite-statsd:v0.9.15-phusion0.9.18
